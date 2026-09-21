@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'digest'
+
 module Jekyll
 module Plugins
 module PaginateV3
@@ -134,7 +136,7 @@ class Builder
 			end.join('|')
 
 			set_signature = [definition_number, layout_name, depth, key, prefix_signature].join('|')
-			set_id = "generated-index-set-#{Digest::MD5.hexdigest(set_signature)}"
+			set_id = "generated-index-set-#{Digest::SHA256.hexdigest(set_signature)[0, 32]}"
 
 			{
 				'set_id' => set_id,

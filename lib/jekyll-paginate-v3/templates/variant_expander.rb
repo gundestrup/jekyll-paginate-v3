@@ -853,7 +853,7 @@ class VariantExpander
 			end.join('|')
 
 			set_signature = [template_signature, layout_name.to_s, depth, key, prefix_signature].join('|')
-			set_id = "template-group-set-#{Digest::MD5.hexdigest(set_signature)}"
+			set_id = "template-group-set-#{Digest::SHA256.hexdigest(set_signature)[0, 32]}"
 
 			{
 				'set_id' => set_id,

@@ -29,5 +29,8 @@ Gem::Specification.new do |spec|
 	spec.add_development_dependency 'debug', '~> 1.9'
 	spec.add_development_dependency 'rspec', '~> 3.10'
 	spec.add_development_dependency 'rubocop', '~> 1.63'
+	spec.add_development_dependency 'simplecov', '~> 1.0'
+	# Cobertura XML formatter — loaded only on CI (see spec_helper).
+	spec.add_development_dependency 'simplecov-cobertura', '~> 4.0'
 	spec.add_development_dependency 'rake', '~> 13.0'
 end

@@ -162,7 +162,7 @@ module Utils
 		stem = derive_synthetic_source_stem(source_path: source_path, source_stem: source_stem, fallback: role)
 		filename_segments = [stem, role.to_s.strip]
 		filename_segments << page_number.to_i.to_s unless page_number.nil?
-		filename_segments << Digest::MD5.hexdigest(canonical_signature(signature).inspect)
+		filename_segments << Digest::SHA256.hexdigest(canonical_signature(signature).inspect)[0, 32]
 		"#{filename_segments.reject(&:empty?).join('-')}#{ensure_leading_dot(extension)}"
 	end
 
