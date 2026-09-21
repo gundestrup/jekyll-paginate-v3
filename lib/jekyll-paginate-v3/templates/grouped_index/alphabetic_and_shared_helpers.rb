@@ -195,7 +195,8 @@ class GroupedIndex
 		return numeric.to_i.to_s if (numeric % 1.0).zero?
 
 		formatted = format('%.10f', numeric)
-		formatted.sub(/0+\z/, '').sub(/\.\z/, '')
+		formatted = formatted.chop while formatted.end_with?('0')
+		formatted.sub(/\.\z/, '')
 	end
 
 	# Formats datetime token values for title placeholders.

@@ -37,7 +37,7 @@ module Utils
 		value = ensure_leading_slash(route.to_s.strip)
 		return '/' if value == '/'
 
-		value.sub(%r{/+\z}, '')
+		strip_trailing_characters(value, '/')
 	end
 
 	# Returns the route fragment added beneath a base route.
@@ -51,7 +51,7 @@ module Utils
 
 		base_prefix = base == '/' ? '/' : "#{base}/"
 		if destination.start_with?(base_prefix)
-			return destination[base_prefix.length..-1].to_s.sub(%r{/+\z}, '')
+			return strip_trailing_characters(destination[base_prefix.length..-1].to_s, '/')
 		end
 
 		description = context.to_s.empty? ? 'pagination variant' : context.to_s
@@ -61,7 +61,7 @@ module Utils
 	# Joins already-resolved relative route fragments for public metadata.
 	def self.join_route_fragments(*fragments)
 		fragments.map do |fragment|
-			fragment.to_s.strip.sub(%r{\A/+}, '').sub(%r{/+\z}, '')
+			strip_trailing_characters(fragment.to_s.strip.sub(%r{\A/+}, ''), '/')
 		end.reject(&:empty?).join('/')
 	end
 
@@ -211,7 +211,7 @@ module Utils
 		component = component.gsub(%r{[\\/]}, '-')
 		component = component.gsub(/[<>:"|?*\x00-\x1f]/, '-')
 		component = component.gsub(/^-+/, '')
-		component = component.gsub(/[. ]+$/, '')
+		component = strip_trailing_characters(component, '.', ' ')
 		component = fallback.to_s if component.empty?
 		component
 	end
@@ -230,6 +230,15 @@ module Utils
 			value
 		end
 	end
+
+	# Removes trailing characters by walking backwards — linear time, unlike
+	# end-anchored repetition patterns (`/+\z`, `[. ]+$`) which rescan the
+	# run once per start position.
+	def self.strip_trailing_characters(value, *characters)
+		value = value.chop while value.end_with?(*characters)
+		value
+	end
+	private_class_method :strip_trailing_characters
 
 	# Decodes one URL segment until stable and rejects malformed percent escapes
 	# exposed at any layer.
