@@ -1,0 +1,11 @@
+# CodeFactor grading — connect the repo at https://www.codefactor.io
+# (no token needed for public repos). Versioned alternative to the
+# UI ignore-list; keep in sync with .sonarcloud.properties.
+ratings:
+  paths:
+    - "lib/**"
+exclude:
+  - "spec/**"
+  - "docs/**"
+  - "pkg/**"
+  - "coverage/**"

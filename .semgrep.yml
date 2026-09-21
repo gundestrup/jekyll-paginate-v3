@@ -37,6 +37,13 @@ rules:
           metavariable: $RE
           regex: '.*(\+\\z|\+\$).*'
 
+  # Mirrors the registry weak-hashes rule so CI catches regressions too.
+  - id: ruby-weak-hash-md5
+    languages: [ruby]
+    severity: WARNING
+    message: 'MD5 is a weak hash — use Digest::SHA256 (truncate with [0, N] if output length matters)'
+    pattern: Digest::MD5.$M(...)
+
   - id: dangerous-eval
     languages: [php, ruby, python, javascript, typescript]
     severity: WARNING

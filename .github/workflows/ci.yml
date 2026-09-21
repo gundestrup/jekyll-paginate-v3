@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: RSpec + coverage
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # codecov tokenless OIDC upload
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        with:
+          bundler-cache: true
+          ruby-version: .ruby-version
+
+      - name: Run specs
+        run: bundle exec rspec
+        env:
+          CI: "true"
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@04b047e8bb82a0c002c8312c1c880fbc6a999d45 # v5
+        with:
+          files: ./coverage/coverage.xml
+          disable_search: true
+          use_oidc: true
+          fail_ci_if_error: false
+
+  lint:
+    name: RuboCop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        with:
+          bundler-cache: true
+          ruby-version: .ruby-version
+
+      - name: Lint
+        run: bundle exec rubocop
+
+  semgrep:
+    name: Semgrep
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      # Community-edition scan against repo-local rules — no Semgrep
+      # account, no telemetry, source never leaves the runner.
+      - name: Semgrep scan
+        run: pipx run semgrep scan --config .semgrep.yml --oss-only --metrics off --disable-version-check --error lib/

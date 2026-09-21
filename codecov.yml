@@ -1,0 +1,18 @@
+# Codecov status thresholds.
+# Baseline measured 2026-09-21: 93.7% line / 73.1% branch — tighten as
+# coverage improves. Fleet reference (98%/90%): jekyll-documents.
+coverage:
+  status:
+    project:
+      default:
+        target: 93%
+        threshold: 2%
+    patch:
+      default:
+        target: 80%
+        threshold: 10%
+
+ignore:
+  - "spec/**"
+  - "docs/**"
+  - "pkg/**"
