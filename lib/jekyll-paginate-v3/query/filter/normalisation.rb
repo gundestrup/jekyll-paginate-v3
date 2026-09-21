@@ -506,7 +506,11 @@ class Filter
 			options |= Regexp::IGNORECASE if flags.include?('i')
 			options |= Regexp::MULTILINE if flags.include?('m')
 			options |= Regexp::EXTENDED if flags.include?('x')
-			return Regexp.new(source, options)
+			begin
+				return Regexp.new(source, options)
+			rescue RegexpError
+				return false
+			end
 		end
 
 		interpret_numeric(value)
