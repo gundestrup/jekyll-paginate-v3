@@ -1,0 +1,44 @@
+# Semgrep configuration
+# https://semgrep.dev/docs/
+#
+# Run: semgrep scan --config .semgrep.yml --error lib/
+# Suppress false positives inline: # nosemgrep: <rule-id> — reason
+
+rules:
+  # Detect String#scan with unanchored polynomial regex (ReDoS).
+  # Excludes StringScanner#scan, which advances positionally and cannot backtrack.
+  - id: ruby-redos-string-scan
+    languages: [ruby]
+    severity: WARNING
+    message: "String#scan with unanchored polynomial regex may cause ReDoS"
+    patterns:
+      - pattern: $X.scan($REGEX)
+      - pattern-not-regex: 'scanner\.scan\('
+      - pattern-not: $X.scan("$LITERAL")
+    options:
+      symbolic_propagation: true
+    metavariable-analysis:
+      analyzer: redos
+      metavariable: $REGEX
+
+  # Detect sub/gsub with an end-anchored quantified run (`/+\z`, `[. ]+$`).
+  # The regex itself is not catastrophic, but sub/gsub try it at every start
+  # position — O(n·k) on a trailing run of length k (CodeQL rb/polynomial-redos).
+  # Strip trailing characters with a chop/end_with? loop instead.
+  - id: ruby-end-anchored-run-strip
+    languages: [ruby]
+    severity: WARNING
+    message: 'sub/gsub with end-anchored run (X+$ / X+\z) rescans per position — quadratic; strip trailing chars with a chop/end_with? loop'
+    patterns:
+      - pattern-either:
+          - pattern: $X.sub($RE, ...)
+          - pattern: $X.gsub($RE, ...)
+      - metavariable-regex:
+          metavariable: $RE
+          regex: '.*(\+\\z|\+\$).*'
+
+  - id: dangerous-eval
+    languages: [php, ruby, python, javascript, typescript]
+    severity: WARNING
+    message: "eval() executes dynamically generated code — review carefully"
+    pattern: eval(...)
