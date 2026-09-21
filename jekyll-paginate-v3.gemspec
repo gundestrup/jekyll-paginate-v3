@@ -33,4 +33,5 @@ Gem::Specification.new do |spec|
 	# Cobertura XML formatter — loaded only on CI (see spec_helper).
 	spec.add_development_dependency 'simplecov-cobertura', '~> 4.0'
 	spec.add_development_dependency 'rake', '~> 13.0'
+	spec.add_development_dependency 'bundler-audit', '~> 0.9'
 end

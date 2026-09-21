@@ -238,25 +238,6 @@ Layout/TrailingWhitespace:
     - 'lib/jekyll-paginate-v3/utils/nested_data.rb'
     - 'lib/jekyll-paginate-v3/utils/paths.rb'
 
-# Offense count: 3
-Lint/HashCompareByIdentity:
-  Exclude:
-    - 'lib/jekyll-paginate-v3/pagination/model/core.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods, IgnoreNotImplementedMethods, NotImplementedExceptions.
-# NotImplementedExceptions: NotImplementedError
-Lint/UnusedMethodArgument:
-  Exclude:
-    - 'lib/jekyll-paginate-v3/config/normaliser/site_and_templates.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Lint/UselessAssignment:
-  Exclude:
-    - 'spec/unit/pagination/paginator_spec.rb'
-
 # Offense count: 118
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:

@@ -21,11 +21,6 @@ Naming/FileName:
   Exclude:
     - 'lib/jekyll-paginate-v3.rb'
 
-# Specs intentionally define stub constants inside RSpec.describe blocks.
-Lint/ConstantDefinitionInBlock:
-  Exclude:
-    - 'spec/**/*'
-
 # These subclasses re-initialise Jekyll objects fully (the same pattern as
 # Jekyll's own PageWithoutAFile) — calling super has no state to reuse.
 Lint/MissingSuper:

@@ -130,7 +130,6 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Pagination::Paginator do
 
 	it 'supports variable per-page windows and compatibility per_page projection' do
 		page_one = Struct.new(:url, :data).new('/articles/', { 'title' => 'Articles' })
-		page_two = Struct.new(:url, :data).new('/articles/page/2/', { 'title' => 'Articles - page 2' })
 		page_three = Struct.new(:url, :data).new('/articles/page/3/', { 'title' => 'Articles - page 3' })
 		page_four = Struct.new(:url, :data).new('/articles/page/4/', { 'title' => 'Articles - page 4' })
 		page_five = Struct.new(:url, :data).new('/articles/page/5/', { 'title' => 'Articles - page 5' })

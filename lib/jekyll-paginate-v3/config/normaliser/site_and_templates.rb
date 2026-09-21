@@ -58,7 +58,6 @@ class Normaliser
 			config['equivalents'] = normalise_equivalents(config['equivalents'], split_delimiter)
 			config['templates'] = normalise_templates(
 				config['templates'],
-				split_delimiter: split_delimiter,
 				keywords: config['keywords']
 			)
 
@@ -187,9 +186,9 @@ class Normaliser
 
 		# Purpose: Normalises templates into canonical form.
 		# Connects to: the surrounding pagination flow in this file.
-		# Params: `raw_templates`, `split_delimiter`.
+		# Params: `raw_templates`, `keywords`.
 		# Returns: a value consumed by the next pipeline step.
-		def normalise_templates(raw_templates, split_delimiter:, keywords:)
+		def normalise_templates(raw_templates, keywords:)
 			defaults = Utils.deep_copy(DEFAULTS['templates'])
 			source_hash = Utils.safe_hash(raw_templates)
 			source = defaults.merge(source_hash)

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe Jekyll::Plugins::PaginateV3::Query::Filter do
-	FilterTestCollection = Struct.new(:label)
-	FilterTestItem = Struct.new(:data, :collection, :path)
+FilterTestCollection = Struct.new(:label)
+FilterTestItem = Struct.new(:data, :collection, :path)
 
+RSpec.describe Jekyll::Plugins::PaginateV3::Query::Filter do
 	# Builds a minimal item object compatible with filter evaluation.
 	def build_item(data, collection: nil, path: nil)
 		collection_object = collection.nil? ? nil : FilterTestCollection.new(collection)
@@ -547,5 +547,22 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Query::Filter do
 		)
 
 		expect(filtered).to eq(items)
+	end
+
+	describe '.filter_to_s' do
+		it 'renders scalar filters as readable expressions' do
+			expect(described_class.filter_to_s('news')).to eq("match news (auto, split:',')")
+		end
+
+		it 'renders joined include groups and ranges' do
+			expect(described_class.filter_to_s({ 'include' => %w[a b], 'join' => 'and' })).to eq(
+				"match a (auto, split:',') and match b (auto, split:',')"
+			)
+			expect(described_class.filter_to_s({ 'min' => 2, 'max' => 5 })).to eq('2.0 to 5.0 (min-inclusive max-inclusive)')
+		end
+
+		it 'reports invalid filters without raising' do
+			expect(described_class.filter_to_s({ 'bogus' => 1 })).to eq('[invalid filter]')
+		end
 	end
 end

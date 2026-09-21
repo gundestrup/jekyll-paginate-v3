@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe Jekyll::Plugins::PaginateV3::Templates::GroupedIndex do
-	GroupedIndexTestCollection = Struct.new(:label)
-	GroupedIndexTestItem = Struct.new(:data, :collection)
+GroupedIndexTestCollection = Struct.new(:label)
+GroupedIndexTestItem = Struct.new(:data, :collection)
 
+RSpec.describe Jekyll::Plugins::PaginateV3::Templates::GroupedIndex do
 	# Builds a minimal item object compatible with grouped indexing evaluation.
 	def build_item(data, collection: nil)
 		collection_object = collection.nil? ? nil : GroupedIndexTestCollection.new(collection)
@@ -317,5 +317,167 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Templates::GroupedIndex do
 				items: items
 			)
 		end.to raise_error(ArgumentError, /more than 100 groups/)
+	end
+
+	describe 'group config validation' do
+		it 'rejects non-hash non-scalar group values' do
+			items = [build_item({ 'size' => 5 })]
+
+			expect do
+				build_entries(key: 'size', group: true, items: items)
+			end.to raise_error(ArgumentError, /`group` must be numeric, string, or hash/)
+		end
+
+		it 'rejects unknown keys in numeric group hashes' do
+			items = [build_item({ 'size' => 5 })]
+
+			expect do
+				build_entries(key: 'size', group: { 'step' => 10, 'bogus' => 1 }, items: items)
+			end.to raise_error(ArgumentError, /Invalid keys for numeric grouped indexing: bogus/)
+		end
+
+		it 'requires group.step for numeric group hashes' do
+			items = [build_item({ 'size' => 5 })]
+
+			expect do
+				build_entries(key: 'size', group: { 'start' => 0 }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` is required for numeric/)
+		end
+
+		it 'rejects step arrays combined with grow' do
+			items = [build_item({ 'size' => 5 })]
+
+			expect do
+				build_entries(key: 'size', group: { 'step' => [10, 20], 'grow' => 2 }, items: items)
+			end.to raise_error(ArgumentError, /cannot be used together with `group.grow`/)
+		end
+
+		it 'rejects empty and non-positive numeric steps' do
+			items = [build_item({ 'size' => 5 })]
+
+			expect do
+				build_entries(key: 'size', group: { 'step' => [] }, items: items)
+			end.to raise_error(ArgumentError, /at least one positive value/)
+
+			expect do
+				build_entries(key: 'size', group: { 'step' => 0 }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` must be greater than zero/)
+		end
+
+		it 'rejects non-numeric steps and non-positive min bounds' do
+			items = [build_item({ 'size' => 5 })]
+
+			expect do
+				build_entries(key: 'size', group: { 'step' => 'nope' }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` must be numeric/)
+
+			expect do
+				build_entries(key: 'size', group: { 'step' => 10, 'min' => -1 }, items: items)
+			end.to raise_error(ArgumentError, /`group.min` must be greater than zero/)
+		end
+
+		it 'rejects out-of-range total group counts' do
+			items = [build_item({ 'size' => 5 })]
+
+			expect do
+				build_entries(key: 'size', group: { 'step' => 10, 'total' => 0 }, items: items)
+			end.to raise_error(ArgumentError, /`group.total` must be a positive integer/)
+
+			expect do
+				build_entries(key: 'size', group: { 'step' => 10, 'total' => 20_000 }, items: items)
+			end.to raise_error(ArgumentError, /`group.total` must be within 1\.\.10000/)
+		end
+
+		it 'requires group.step for datetime group hashes' do
+			items = [build_item({ 'published_on' => '2026-01-15' })]
+
+			expect do
+				build_entries(key: 'published_on', group: { 'start' => 'month(today)' }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` is required for datetime/)
+		end
+
+		it 'rejects unknown keys and step+grow combinations for datetime grouping' do
+			items = [build_item({ 'published_on' => '2026-01-15' })]
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => 'month', 'bogus' => 1 }, items: items)
+			end.to raise_error(ArgumentError, /Invalid keys for datetime grouped indexing: bogus/)
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => %w[day month], 'grow' => 2 }, items: items)
+			end.to raise_error(ArgumentError, /cannot be used together with `group.grow`/)
+		end
+
+		it 'rejects unparseable and blank datetime starts' do
+			items = [build_item({ 'published_on' => '2026-01-15' })]
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => 'day', 'start' => 'not-a-date' }, items: items)
+			end.to raise_error(ArgumentError, /`group.start` could not be parsed as datetime/)
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => 'day', 'start' => '   ' }, items: items)
+			end.to raise_error(ArgumentError, /`group.start` could not be parsed as datetime/)
+		end
+
+		it 'rejects non-duration datetime steps' do
+			items = [build_item({ 'published_on' => '2026-01-15' })]
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => true, 'min' => 'day' }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` must be numeric or a duration token/)
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => '   ', 'min' => 'day' }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` cannot be blank/)
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => 'fortnight(2)', 'min' => 'day' }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` must be numeric or one of/)
+		end
+
+		it 'rejects non-positive and fractional calendar durations' do
+			items = [build_item({ 'published_on' => '2026-01-15' })]
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => 'hour(0)' }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` must be greater than zero/)
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => 'month(1.5)' }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` for unit month must be a whole number/)
+		end
+
+		it 'rejects invalid min durations for datetime grouping' do
+			items = [build_item({ 'published_on' => '2026-01-15' })]
+
+			expect do
+				build_entries(key: 'published_on', group: { 'step' => 'day', 'min' => 'bogus' }, items: items)
+			end.to raise_error(ArgumentError, /`group.min` must be numeric or one of/)
+		end
+
+		it 'rejects unknown keys and oversized steps for alphabetic grouping' do
+			items = [build_item({ 'title' => 'Apple' })]
+
+			expect do
+				build_entries(key: 'title', group: { 'start' => 'aa', 'step' => 1, 'bogus' => 1 }, items: items)
+			end.to raise_error(ArgumentError, /Invalid keys for alphabetic grouped indexing: bogus/)
+
+			expect do
+				build_entries(key: 'title', group: { 'start' => 'aa', 'step' => 200_000_000 }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` is too large/)
+		end
+
+		it 'rejects non-positive alphabetic steps and non-string group values' do
+			items = [build_item({ 'title' => 'Apple' })]
+
+			expect do
+				build_entries(key: 'title', group: { 'start' => 'aa', 'step' => 0 }, items: items)
+			end.to raise_error(ArgumentError, /`group.step` must be a positive integer/)
+
+			expect do
+				build_entries(key: 'title', group: [], items: items)
+			end.to raise_error(ArgumentError, /`group` must be a string or hash/)
+		end
 	end
 end

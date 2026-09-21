@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate do
-	Value = described_class::Value
+PlaceholderTemplateValue = Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate::Value
 
+RSpec.describe Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate do
 	def parse(source, allowed: %w[category num], allowed_filters: nil, unknown: described_class::UNKNOWN_ERROR)
 		described_class.parse(
 			source,
@@ -14,7 +14,7 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate do
 	end
 
 	it 'resolves canonical placeholders with contextual defaults and explicit filters' do
-		value = Value.new(raw: 'Old Shoes', slugified: 'old-shoes')
+		value = PlaceholderTemplateValue.new(raw: 'Old Shoes', slugified: 'old-shoes')
 		pattern = parse('{{ category }} / {{ category | slugify }} / {{category | raw}}')
 
 		expect(pattern.render({ 'category' => value }, default_representation: :raw)).to eq('Old Shoes / old-shoes / Old Shoes')
@@ -22,8 +22,8 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate do
 
 	it 'lexes legacy placeholders greedily into the same resolver' do
 		pattern = parse(':category-name/:category', allowed: %w[category category-name])
-		value = Value.new(raw: 'short')
-		long_value = Value.new(raw: 'long')
+		value = PlaceholderTemplateValue.new(raw: 'short')
+		long_value = PlaceholderTemplateValue.new(raw: 'long')
 
 		expect(
 			pattern.render(
@@ -34,7 +34,7 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate do
 	end
 
 	it 'keeps bound values opaque during later path splitting' do
-		value = Value.new(raw: 'old.shoes', slugified: 'old-shoes')
+		value = PlaceholderTemplateValue.new(raw: 'old.shoes', slugified: 'old-shoes')
 		bound = parse('details.{{ category | raw }}.name').bind(
 			{ 'category' => value },
 			default_representation: :slugify
@@ -46,12 +46,12 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate do
 	it 'does not recursively interpret placeholder-looking bound values' do
 		pattern = parse('{{ category }} {{ num }}')
 		bound = pattern.bind(
-			{ 'category' => Value.new(raw: ':num') },
+			{ 'category' => PlaceholderTemplateValue.new(raw: ':num') },
 			default_representation: :raw
 		)
 
 		expect(
-			bound.render({ 'num' => Value.new(raw: 4) }, default_representation: :raw)
+			bound.render({ 'num' => PlaceholderTemplateValue.new(raw: 4) }, default_representation: :raw)
 		).to eq(':num 4')
 	end
 
@@ -84,7 +84,7 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate do
 		pattern = parse('{{ category | slugify }}', allowed_filters: allowed_filters)
 
 		expect(
-			pattern.render({ 'category' => Value.new(raw: 'Old Shoes') }, default_representation: :slugify)
+			pattern.render({ 'category' => PlaceholderTemplateValue.new(raw: 'Old Shoes') }, default_representation: :slugify)
 		).to eq('old-shoes')
 
 		expect do
@@ -100,14 +100,14 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate do
 		)
 
 		expect(
-			pattern.render({ 'category' => Value.new(raw: 'Guides') }, default_representation: :raw)
+			pattern.render({ 'category' => PlaceholderTemplateValue.new(raw: 'Guides') }, default_representation: :raw)
 		).to eq('{{ page.title }} — Guides')
 	end
 
 	it 'allows recognised canonical and legacy placeholders to be escaped as literals' do
 		canonical = parse('\\{{ category }} and {{ category }}')
 		legacy = parse('\\:category and :category')
-		value = Value.new(raw: 'Guides')
+		value = PlaceholderTemplateValue.new(raw: 'Guides')
 
 		expect(canonical.render({ 'category' => value }, default_representation: :raw)).to eq('{{ category }} and Guides')
 		expect(legacy.render({ 'category' => value }, default_representation: :raw)).to eq(':category and Guides')
@@ -121,12 +121,12 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Support::PlaceholderTemplate do
 		)
 
 		expect(
-			pattern.render({ 'category' => Value.new(raw: 'Guides') }, default_representation: :raw)
+			pattern.render({ 'category' => PlaceholderTemplateValue.new(raw: 'Guides') }, default_representation: :raw)
 		).to eq('{% raw %}{{ category }}{% endraw %}{% comment %}{{ category }}{% endcomment %} Guides')
 	end
 
 	it 'rejects raw resolution when a slug represents multiple raw group values' do
-		value = Value.new(raw: 'Old Shoes', slugified: 'old-shoes', raw_available: false)
+		value = PlaceholderTemplateValue.new(raw: 'Old Shoes', slugified: 'old-shoes', raw_available: false)
 
 		expect do
 			parse('{{ category | raw }}').render({ 'category' => value }, default_representation: :slugify)

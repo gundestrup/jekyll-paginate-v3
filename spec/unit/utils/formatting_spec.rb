@@ -48,4 +48,35 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Utils do
 			expect(described_class.format_page_title('{{ title }} {{ num }}', ':num', 3, 3)).to eq(':num 3')
 		end
 	end
+
+	describe '.comma_delimited_array' do
+		it 'splits comma-delimited strings into trimmed entries' do
+			expect(described_class.comma_delimited_array('a, b,, c ')).to eq(%w[a b c])
+			expect(described_class.comma_delimited_array(['x', 'y,z'])).to eq(%w[x y z])
+		end
+	end
+
+	describe '.merge_generated_template_pagination' do
+		it 'lets generated config override layout defaults by default' do
+			merged = described_class.merge_generated_template_pagination(
+				{ 'per_page' => 5 },
+				{ 'per_page' => 9, 'enabled' => true },
+				nil
+			)
+
+			expect(merged['per_page']).to eq(5)
+			expect(merged['enabled']).to eq(true)
+		end
+
+		it 'keeps legacy v2 override order and strips layout enabled' do
+			merged = described_class.merge_generated_template_pagination(
+				{ 'per_page' => 5 },
+				{ 'per_page' => 9, 'enabled' => false },
+				'v2'
+			)
+
+			expect(merged['per_page']).to eq(9)
+			expect(merged).not_to have_key('enabled')
+		end
+	end
 end

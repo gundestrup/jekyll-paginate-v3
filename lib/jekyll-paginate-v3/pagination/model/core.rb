@@ -32,7 +32,7 @@ class Model
 		@generated_index_sets = {}
 		@clone_collection_cache = {}
 		@template_search_reports = []
-		@template_search_report_lookup = {}
+		@template_search_report_lookup = {}.compare_by_identity
 		@template_search_duration_seconds = 0.0
 		@item_resolution_pages = nil
 		@item_resolution_documents_by_collection = nil
@@ -214,8 +214,7 @@ class Model
 			}
 			@template_search_reports << report_entry
 			entry_candidates.uniq.each do |candidate|
-				@template_search_report_lookup[candidate.object_id] ||= []
-				@template_search_report_lookup[candidate.object_id] << report_entry
+				(@template_search_report_lookup[candidate] ||= []) << report_entry
 			end
 		end
 
@@ -250,7 +249,7 @@ class Model
 	# Resets search-location reporting state before template discovery.
 	def reset_template_search_reporting_state
 		@template_search_reports = []
-		@template_search_report_lookup = {}
+		@template_search_report_lookup = {}.compare_by_identity
 	end
 
 	# Formats one parsed search entry for info-level summary output.
@@ -260,7 +259,7 @@ class Model
 
 	# Adds paginated item/index totals to all matching search entry reports.
 	def record_template_search_report_totals(template, template_pagination_report)
-		report_entries = @template_search_report_lookup[template.object_id]
+		report_entries = @template_search_report_lookup[template]
 		return if report_entries.nil? || report_entries.empty?
 
 		report_entries.each do |report_entry|
