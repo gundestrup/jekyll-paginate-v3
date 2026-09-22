@@ -40,6 +40,13 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Support::ProcessedValue do
 		expect(build_value('1', split: false).type?('float')).to eq(true)
 		expect(build_value('2026-01-01', split: false).type?('date')).to eq(true)
 		expect(build_value('2026-01-01', split: false).type?('datetime')).to eq(true)
+		expect(build_value('2026/01/01 12-30 +01-00', split: false).type?('datetime')).to eq(true)
+		expect(build_value(Date.new(2026, 1, 1), split: false).type?('date')).to eq(true)
+		expect(build_value(Time.utc(2026, 1, 1), split: false).type?('datetime')).to eq(true)
+		expect(build_value(DateTime.new(2026, 1, 1), split: false).type?('date')).to eq(true)
+		expect(build_value('September 29', split: false).type?('date')).to eq(false)
+		expect(build_value('2026-01/01', split: false).type?('date')).to eq(false)
+		expect(build_value('LYwqSnWuTw29cB9eizhgrQ', split: false).type?('datetime')).to eq(false)
 	end
 
 	it 'does not treat arrays as scalar typed values' do

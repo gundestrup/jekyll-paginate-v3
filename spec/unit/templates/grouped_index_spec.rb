@@ -121,14 +121,14 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Templates::GroupedIndex do
 
 	it 'supports datetime calendar durations for grouped steps' do
 		items = [
-			build_item({ 'published_on' => '2026-12-15' }),
-			build_item({ 'published_on' => '2027-02-11' })
+			build_item({ 'published_on' => '2026/12/15' }),
+			build_item({ 'published_on' => '2027:02:11' })
 		]
 
 		entries = build_entries(
 			key: 'published_on',
 			group: {
-				'start' => '2026-12-12',
+				'start' => '2026.12.12',
 				'step' => 'month(2)'
 			},
 			items: items
@@ -141,14 +141,14 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Templates::GroupedIndex do
 
 	it 'emits time-precision datetime permalink tokens when grouped by hours' do
 		items = [
-			build_item({ 'published_at' => '2026-01-01T05:00:00+00:00' }),
-			build_item({ 'published_at' => '2026-01-01T07:00:00+00:00' })
+			build_item({ 'published_at' => '2026/01/01T05-00' }),
+			build_item({ 'published_at' => '2026.01.01 07.00.00 Z' })
 		]
 
 		entries = build_entries(
 			key: 'published_at',
 			group: {
-				'start' => '2026-01-01T00:00:00+00:00',
+				'start' => '2026:01:01T00-00 +00-00',
 				'step' => 'hour(6)'
 			},
 			items: items
@@ -180,6 +180,21 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Templates::GroupedIndex do
 		expect(entries.length).to eq(1)
 		expect(entries[0].dig('filters', 'published_on', 'min').strftime('%Y-%m-%d')).to eq("#{current_year}-01-01")
 		expect(entries[0].dig('filters', 'published_on', 'max').strftime('%Y-%m-%d')).to eq("#{current_year + 1}-01-01")
+	end
+
+	it 'rejects incomplete absolute datetime starts' do
+		items = [build_item({ 'published_on' => '2026-09-29' })]
+
+		expect do
+			build_entries(
+				key: 'published_on',
+				group: {
+					'start' => 'September 29',
+					'step' => 'day'
+				},
+				items: items
+			)
+		end.to raise_error(ArgumentError, /could not be parsed as datetime/)
 	end
 
 	it 'supports bare datetime step keywords as implicit (1)' do

@@ -150,7 +150,7 @@ class Filter
 
 	# Checks one item value against an optional min/max range.
 	def range_match?(value, min_value, max_value, range_mode)
-		comparable_value = normalise_comparable_scalar(value)
+		comparable_value = normalise_range_candidate(value, min_value, max_value)
 		return false if comparable_value.nil?
 
 		min_inclusive, max_inclusive = parse_range_mode_flags(range_mode)
@@ -176,6 +176,18 @@ class Filter
 		true
 	rescue ArgumentError, NoMethodError
 		false
+	end
+
+	# Coerces a range candidate according to its already-normalised boundary
+	# type. Date parsing is therefore explicit to range evaluation and never
+	# leaks into ordinary scalar equality.
+	def normalise_range_candidate(value, min_value, max_value)
+		boundary = min_value.nil? ? max_value : min_value
+		if boundary.is_a?(Date) || boundary.is_a?(DateTime) || boundary.is_a?(Time)
+			return Jekyll::Plugins::PaginateV3::Support::LooseScalar.datetime(value)
+		end
+
+		Jekyll::Plugins::PaginateV3::Support::LooseScalar.number(value)
 	end
 
 	# Parses one canonical range mode string into inclusion flags.

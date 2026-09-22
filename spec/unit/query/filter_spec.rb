@@ -364,6 +364,27 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Query::Filter do
 		expect(filtered).to eq(items)
 	end
 
+	it 'supports ISO-shaped date ranges with loose, internally consistent separators' do
+		items = [
+			build_item({ 'title' => 'First', 'published_at' => '2026/01/01 12-00' }),
+			build_item({ 'title' => 'Second', 'published_at' => '2026.01.02T12.00.30 Z' }),
+			build_item({ 'title' => 'Third', 'published_at' => '2026:01:03 12:00' }),
+			build_item({ 'title' => 'Not A Date', 'published_at' => 'September 29' })
+		]
+
+		filtered = apply_filters(
+			items,
+			{
+				'published_at' => {
+					'min' => '2026-01-01T12:00Z',
+					'max' => '2026/01/02 12-00-30 Z'
+				}
+			}
+		)
+
+		expect(filtered).to eq([items[0], items[1]])
+	end
+
 	it 'supports inclusive and exclusive range mode boundaries' do
 		items = [
 			build_item({ 'title' => 'One', 'rating' => 1 }),
@@ -425,6 +446,30 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Query::Filter do
 
 		filtered = apply_filters(items, { 'collection' => 'products' })
 		expect(filtered).to eq([items[1]])
+	end
+
+	it 'does not collapse distinct opaque identifiers during scalar matching' do
+		small_format_print_id = 'LYwqSnWuTw29cB9eizhgrQ'
+		website_id = 'HOFkLzQgQhu1cDMBcgn29g'
+		items = [
+			build_item({ 'title' => 'Small Format Print', 'meta' => { 'links' => { 'deliverables' => { 'id' => small_format_print_id } } } }),
+			build_item({ 'title' => 'Website', 'meta' => { 'links' => { 'deliverables' => { 'id' => website_id } } } })
+		]
+
+		filtered = apply_filters(items, { 'meta.links.deliverables.id' => small_format_print_id })
+
+		expect(filtered).to eq([items.first])
+	end
+
+	it 'keeps date-shaped strings exact during scalar matching' do
+		items = [
+			build_item({ 'title' => 'Hyphenated', 'value' => '2026-01-01' }),
+			build_item({ 'title' => 'Slashed', 'value' => '2026/01/01' })
+		]
+
+		filtered = apply_filters(items, { 'value' => '2026-01-01' })
+
+		expect(filtered).to eq([items.first])
 	end
 
 	it 'treats exists true and false as strict negations after value processing' do

@@ -535,7 +535,13 @@ class Filter
 			return today_expression unless today_expression.nil?
 		end
 
-		interpret_numeric(value, must_cast: true)
+		numeric_value = Jekyll::Plugins::PaginateV3::Support::LooseScalar.number(value)
+		return numeric_value unless numeric_value.nil?
+
+		datetime_value = Jekyll::Plugins::PaginateV3::Support::LooseScalar.datetime(value)
+		return datetime_value unless datetime_value.nil?
+
+		false
 	end
 
 	# Parses configured now-keyword expressions into DateTime values.
@@ -576,7 +582,7 @@ class Filter
 		end
 	end
 
-	# Casts string values to Integer, Float, or DateTime when possible.
+	# Casts string values to Integer or Float when possible.
 	# Returns the original string unless strict casting is requested.
 	def interpret_numeric(value, must_cast: false)
 		comparable_value = Jekyll::Plugins::PaginateV3::Support::LooseScalar.comparable(value, must_cast: must_cast)

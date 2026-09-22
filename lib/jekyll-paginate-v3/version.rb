@@ -4,7 +4,7 @@ module Jekyll
 module Plugins
 
 module PaginateV3
-	VERSION = '0.2.0.alpha'
+	VERSION = '0.2.1.alpha'
 end
 
 end

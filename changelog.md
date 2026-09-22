@@ -1,6 +1,11 @@
 # Changelog
 
 
+## 0.2.1.alpha
+
+* Fixed a serious bug in date parsing, which too eagerly coerced strings to dates. Strings are now only read as dates in explicitly date-aware operations, and only if the string is in ISO 6801 shape.
+
+
 ## 0.2.0.alpha
 
 * Placeholder pipeline overhauled and made more robust.

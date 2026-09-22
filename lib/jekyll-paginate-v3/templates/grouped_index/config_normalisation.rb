@@ -252,7 +252,10 @@ class GroupedIndex
 		keyword_value = interpret_datetime_keyword_expression(stripped, range_key: 'min')
 		return keyword_value unless keyword_value.nil?
 
-		DateTime.parse(stripped)
+		datetime_value = Jekyll::Plugins::PaginateV3::Support::LooseScalar.datetime(stripped)
+		return datetime_value unless datetime_value.nil?
+
+		raise ArgumentError
 	rescue ArgumentError
 		raise ArgumentError, "`group.start` could not be parsed as datetime: #{raw_value.inspect}."
 	end
@@ -355,10 +358,10 @@ class GroupedIndex
 		return true if stripped.match?(/\A(?:#{precise_units})(?:\s*\(|\z)/i)
 		return true if stripped.match?(/\A#{Regexp.escape(@now_keyword)}(?:\s*[+-]\s*\d+)?\z/i)
 
-		parsed = DateTime.parse(stripped)
+		parsed = Jekyll::Plugins::PaginateV3::Support::LooseScalar.datetime(stripped)
+		return false if parsed.nil?
+
 		parsed.hour.positive? || parsed.min.positive? || parsed.sec.positive?
-	rescue ArgumentError
-		false
 	end
 end
 
