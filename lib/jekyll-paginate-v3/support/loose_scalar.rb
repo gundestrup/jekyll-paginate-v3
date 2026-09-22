@@ -19,7 +19,7 @@ module LooseScalar
 	DATETIME_STRING_PATTERN = %r{
 		\A
 		(?<year>\d{4})
-		(?<date_separator>[:.\/-])
+		(?<date_separator>[:./-])
 		(?<month>\d{2})
 		\k<date_separator>
 		(?<day>\d{2})
@@ -46,7 +46,7 @@ module LooseScalar
 			)?
 		)?
 		\z
-	}x.freeze
+	}x
 
 	# Interprets one value as a strict boolean or a loose `true`/`false`
 	# string. Returns `nil` when no boolean meaning can be inferred.
