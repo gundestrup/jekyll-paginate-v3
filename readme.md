@@ -162,8 +162,8 @@ The number of items that appear per page are controlled with:
 | Key | Default | Effect |
 | --- | ------- | ------ |
 | `per_page` | 10 | Number of items per index page, or an array where the nth value is used for page n (and the last value repeats thereafter). Example: `per_page: [5, 2, 10]` gives page sizes 5, 2, 10, 10, 10... |
-| `limit`    | 0  | Include only the first X items (0 = disabled) |
-| `offset`   | 0  | Skip first X items |
+| `limit` | 0 | Include only the first X items (0 = disabled) |
+| `offset` | 0 | Skip first X items |
 
 ### Filters
 
@@ -368,11 +368,11 @@ The value can either be a single string (e.g. `pages`), which treats all index p
 
 If your site works with collections, each of `self`, `shadow` and `clone` have pros and cons. You should choose which mode depending on how you site iterates and works with collections.
 
-| Value    | Pros | Cons |
+| Value | Pros | Cons |
 | -------- | ---- | ---- |
-| `self`   | Index page is a true document in the original collection | `{% for item in site.<collection> %}` will include index pages |
+| `self` | Index page is a true document in the original collection | `{% for item in site.<collection> %}` will include index pages |
 | `shadow` | Index page is invisible to `site.<collection>` | Only has the functionality of a Jekyll page |
-| `clone`  | Index page is a true document in `<source>_indexes` collection | Adds an additional collection to the site |
+| `clone` | Index page is a true document in `<source>_indexes` collection | Adds an additional collection to the site |
 
 The default `self, shadow` means that page 1 remains a true member of the original collection, while pages 2+ are Jekyll pages that retain metadata about that collection.
 

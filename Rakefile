@@ -136,6 +136,11 @@ raise "Unable to load #{gemspec_file}" unless specification
 
 require_path = GEM_REQUIRE_PATH || specification.name
 
+desc 'Lint Markdown documentation'
+task :markdownlint do
+	sh 'npx --yes markdownlint-cli2@0.23.2'
+end
+
 desc 'Run the test suite'
 RSpec::Core::RakeTask.new(:test)
 
