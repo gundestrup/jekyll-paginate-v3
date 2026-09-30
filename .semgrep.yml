@@ -1,7 +1,7 @@
 # Semgrep configuration
 # https://semgrep.dev/docs/
 #
-# Run: semgrep scan --config .semgrep.yml --error lib/
+# Run: semgrep scan --config .semgrep.yml --error .
 # Suppress false positives inline: # nosemgrep: <rule-id> — reason
 
 rules:

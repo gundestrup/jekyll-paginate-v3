@@ -184,6 +184,7 @@ RSpec.describe 'Pagination integration: navigation, URLs, and trails' do
 			next_url = rendered[%r{<p id="next-url">(.*?)</p>}m, 1]
 			first_url = rendered[%r{<p id="first-url">(.*?)</p>}m, 1]
 			last_url = rendered[%r{<p id="last-url">(.*?)</p>}m, 1]
+			# nosemgrep: ruby-redos-string-scan — input is generator-produced HTML, not attacker data
 			trail_lines = rendered.scan(%r{<li>(.*?)</li>}m).flatten.map do |entry|
 				number, value = entry.split(':', 2)
 				next "#{number}:CURRENT" if value == 'CURRENT'

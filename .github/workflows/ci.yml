@@ -93,8 +93,10 @@ jobs:
 
       # Community-edition scan against repo-local rules — no Semgrep
       # account, no telemetry, source never leaves the runner.
+      # Scan the repo root: semgrep limits itself to git-tracked files, and
+      # naming explicit dirs silently breaks CI if one is ever removed.
       - name: Semgrep scan
-        run: pipx run semgrep scan --config .semgrep.yml --oss-only --metrics off --disable-version-check --error lib/
+        run: pipx run semgrep scan --config .semgrep.yml --oss-only --metrics off --disable-version-check --error .
 
   audit:
     name: bundler-audit
