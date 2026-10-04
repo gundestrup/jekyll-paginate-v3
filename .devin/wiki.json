@@ -1,0 +1,35 @@
+{
+  "repo_notes": [
+    { "content": "Jekyll pagination plugin (alpha status) for Jekyll 3.8.5+: paginate pages or collection documents, filter items by any frontmatter key including nested keys, and group index pages by frontmatter keys (e.g. per-category indexes)." },
+    { "content": "Template model: a page/document with 'pagination: enabled: true' is consumed as a template — removed from output, but used to generate an index page per pagination page, each carrying a 'paginator' Liquid variable with its items." },
+    { "content": "Templates can be authored manually or auto-generated from 'pagination: templates: generate' config entries." },
+    { "content": "Fork-era lineage: successor to jekyll-paginate-v2 (itself the successor of the deprecated jekyll-paginate)." },
+    { "content": "See README.md for the full config reference (items, group, filters, permalinks, sorting)." }
+  ],
+  "pages": [
+    {
+      "title": "Architecture Overview",
+      "purpose": "How the plugin turns pagination templates into generated index pages: config -> template discovery/generation -> item selection/filtering -> per-index paginator variable",
+      "page_notes": [{ "content": "Include Mermaid diagram: config+templates -> collection scan -> grouped/filtered items -> generated index pages" }]
+    },
+    {
+      "title": "Pagination Templates",
+      "purpose": "Template contract (pagination: enabled: true), template removal vs generated indexes, manual vs generated templates (templates: generate), layout inheritance",
+      "parent": "Architecture Overview"
+    },
+    {
+      "title": "Filtering and Grouping",
+      "purpose": "Item selection by frontmatter keys (including nested), group-by indexes (e.g. category), and how paginator.items is populated per index",
+      "parent": "Architecture Overview"
+    },
+    {
+      "title": "Configuration",
+      "purpose": "All pagination: config keys — enabled, items, group, per_page, permalink, sorting, template generation — with defaults",
+      "parent": "Architecture Overview"
+    },
+    {
+      "title": "Testing and Release",
+      "purpose": "Test suite and release workflow for the gem (alpha maturity caveats)"
+    }
+  ]
+}
