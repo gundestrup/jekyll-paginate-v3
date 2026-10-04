@@ -9,7 +9,7 @@ require 'simplecov-cobertura' if ENV['CI']
 
 SimpleCov.start do
 	enable_coverage :branch
-	add_filter '/spec/'
+	skip '/spec/'
 	# Floor sits just under the measured baseline (93.7% line / 73.1%
 	# branch on 2026-09-21) — raise it as coverage improves.
 	minimum_coverage line: 93, branch: 73 if ENV['CI'] || ENV['COVERAGE']
