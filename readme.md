@@ -1,6 +1,7 @@
 # Jekyll Paginate V3
 
 ![Alpha](https://img.shields.io/badge/status-alpha-red)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gundestrup/jekyll-paginate-v3)
 
 Flexible and configurable pagination for Jekyll 3.8.5+.
 
