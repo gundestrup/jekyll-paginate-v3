@@ -13,7 +13,11 @@ SimpleCov.start do
 	# Floor sits just under the measured baseline (93.7% line / 73.1%
 	# branch on 2026-09-21) — raise it as coverage improves.
 	minimum_coverage line: 93, branch: 73 if ENV['CI'] || ENV['COVERAGE']
-	formatter SimpleCov::Formatter::CoberturaFormatter if ENV['CI']
+	if ENV['CI']
+		formatter SimpleCov::Formatter::MultiFormatter.new(
+			[SimpleCov::Formatter::CoberturaFormatter, SimpleCov::Formatter::JSONFormatter]
+		)
+	end
 end
 
 require 'rspec'
