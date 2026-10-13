@@ -1,21 +1,16 @@
 # Security Policy
 
-## Supported Versions
+This repository is a fork of [ConvincibleMedia/jekyll-paginate-v3](https://github.com/ConvincibleMedia/jekyll-paginate-v3).
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+- Vulnerabilities in code unchanged from upstream: please report them to
+  the upstream project.
+- Vulnerabilities introduced by this fork's changes: report them
+  privately via
+  [GitHub Security Advisories](../../security/advisories/new)
+  on this repository, or contact the fork owner directly.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Only the current state of this fork's default branch is supported with
+security updates.
 
-## Reporting a Vulnerability
-
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+**Please do not report security vulnerabilities through public GitHub
+issues.**
