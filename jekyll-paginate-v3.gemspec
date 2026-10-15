@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
 
 	spec.add_development_dependency 'jekyll-test-harness', '= 0.1.0.alpha'
 	# Liquid requires bigdecimal, which is a bundled (not default) gem since Ruby 3.4.
-	spec.add_development_dependency 'bigdecimal', '>= 3.1'
+	spec.add_development_dependency 'bigdecimal', '~> 3.1'
 	# Jekyll's default Markdown configuration uses this converter during the integration suite, so declare it rather than relying on a global gem.
 	spec.add_development_dependency 'kramdown-parser-gfm', '~> 1.1'
 	spec.add_development_dependency 'debug', '~> 1.9'
