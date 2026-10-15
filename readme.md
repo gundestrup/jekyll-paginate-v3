@@ -1,6 +1,13 @@
 # Jekyll Paginate V3
 
 ![Alpha](https://img.shields.io/badge/status-alpha-red)
+[![CI](https://github.com/gundestrup/jekyll-paginate-v3/actions/workflows/ci.yml/badge.svg)](https://github.com/gundestrup/jekyll-paginate-v3/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-LGPL--3.0--or--later-blue)](https://www.gnu.org/licenses/lgpl-3.0.html)
+[![Codecov](https://codecov.io/gh/gundestrup/jekyll-paginate-v3/branch/master/graph/badge.svg)](https://codecov.io/gh/gundestrup/jekyll-paginate-v3)
+[![RubyGems](https://img.shields.io/gem/v/jekyll-paginate-v3)](https://rubygems.org/gems/jekyll-paginate-v3)
+[![Semgrep](https://img.shields.io/badge/Semgrep-CE%20scan-4B32C3?logo=semgrep&logoColor=white)](https://github.com/gundestrup/jekyll-paginate-v3/actions/workflows/ci.yml)
+[![SonarCloud Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=gundestrup_jekyll-paginate-v3&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=gundestrup_jekyll-paginate-v3)
+[![CodeFactor](https://www.codefactor.io/repository/github/gundestrup/jekyll-paginate-v3/badge)](https://www.codefactor.io/repository/github/gundestrup/jekyll-paginate-v3)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gundestrup/jekyll-paginate-v3)
 
 Flexible and configurable pagination for Jekyll 3.8.5+.
