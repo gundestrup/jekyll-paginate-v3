@@ -1,6 +1,6 @@
 {
   "repo_notes": [
-    { "content": "Jekyll pagination plugin (alpha status) for Jekyll 3.8.5+: paginate pages or collection documents, filter items by any frontmatter key including nested keys, and group index pages by frontmatter keys (e.g. per-category indexes)." },
+    { "content": "Jekyll pagination plugin (alpha status) for Jekyll 3.9+: paginate pages or collection documents, filter items by any frontmatter key including nested keys, and group index pages by frontmatter keys (e.g. per-category indexes)." },
     { "content": "Template model: a page/document with 'pagination: enabled: true' is consumed as a template — removed from output, but used to generate an index page per pagination page, each carrying a 'paginator' Liquid variable with its items." },
     { "content": "Templates can be authored manually or auto-generated from 'pagination: templates: generate' config entries." },
     { "content": "Fork-era lineage: successor to jekyll-paginate-v2 (itself the successor of the deprecated jekyll-paginate)." },
@@ -29,7 +29,7 @@
     },
     {
       "title": "Testing and Release",
-      "purpose": "Test suite and release workflow for the gem (alpha maturity caveats)"
+      "purpose": "Test suite layout (unit/integration/system), Jekyll 3.9/4.x CI matrix via JEKYLL_VERSION, golden-file CLI end-to-end spec, coverage floors, and release workflow for the gem (alpha maturity caveats)"
     }
   ]
 }

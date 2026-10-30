@@ -10,7 +10,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/gundestrup/jekyll-paginate-v3/badge)](https://www.codefactor.io/repository/github/gundestrup/jekyll-paginate-v3)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gundestrup/jekyll-paginate-v3)
 
-Flexible and configurable pagination for Jekyll 3.8.5+.
+Flexible and configurable pagination for Jekyll 3.9+.
 
 * Paginate pages or collection documents.
 * Filter items by any frontmatter key (including nested keys).
@@ -514,9 +514,39 @@ In V1 compatibility mode:
 * Permalinks are always absolute to site root.
 
 
+## Development
+
+Run the test suite with:
+
+```sh
+bundle install
+bundle exec rspec
+```
+
+The suite is organised in three layers under `spec/`:
+
+* `spec/unit` — isolated unit specs for normalisers, filters, sorters, and template objects.
+* `spec/integration` — full in-process Jekyll builds: each example assembles a real site (config, layouts, posts, collections) via `jekyll-test-harness`, runs `site.process`, and asserts on generated pages, paginator payloads, and rendered HTML written to `_site`.
+* `spec/system` — true end-to-end checks: `spec/system/cli_build_spec.rb` runs the real `jekyll build` CLI in a subprocess against `spec/fixtures/golden_site` and compares the rendered output byte-for-byte with the committed golden files in `spec/fixtures/golden_expected`. To regenerate the golden files after an intentional output change:
+
+  ```sh
+  bundle exec jekyll build --source spec/fixtures/golden_site --destination spec/fixtures/golden_expected
+  ```
+
+Coverage is measured by SimpleCov (line + branch) and gated on CI at 93% line / 73% branch.
+
+To run the suite against a specific Jekyll version (mirroring the CI matrix), pin it via `JEKYLL_VERSION`:
+
+```sh
+JEKYLL_VERSION='~> 3.9.0' bundle update jekyll
+JEKYLL_VERSION='~> 3.9.0' bundle exec rspec
+```
+
+Jekyll 3.9.x and 4.x are tested on CI. Jekyll 3.8.x is not supported: it requires `kramdown ~> 1.14`, which conflicts with `kramdown-parser-gfm` (`kramdown ~> 2.0`).
+
 ## Notes
 
-**This gem is in an alpha release.** Breaking changes may occur between 0.x minor versions, and the gem overall has not been fully tested. If you encounter any issues please report them.
+**This gem is in an alpha release.** Breaking changes may occur between 0.x minor versions. The gem is covered by an extensive automated test suite (see [Development](#development)), but real-world edge cases may remain. If you encounter any issues please report them.
 
 Other behavioural notes:
 

@@ -16,7 +16,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Lint Markdown
-        uses: DavidAnson/markdownlint-cli2-action@21c1be1b93ad9ed58fa840aacc3f279cde2a72ff
+        uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34 # v25.0.0
         with:
           config: .markdownlint-cli2.jsonc
           globs: |
@@ -40,11 +40,19 @@ jobs:
             .github/**/*.md
 
   test:
-    name: RSpec + coverage
+    name: RSpec + coverage (Jekyll ${{ matrix.jekyll-version }})
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write # codecov tokenless OIDC upload
+    strategy:
+      fail-fast: false
+      matrix:
+        # Jekyll 3.8.x cannot be tested: it requires kramdown ~> 1.14,
+        # which conflicts with kramdown-parser-gfm (~> 2.0).
+        jekyll-version: ['~> 3.9.0', '~> 4.0']
+    env:
+      JEKYLL_VERSION: ${{ matrix.jekyll-version }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -52,7 +60,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
+        uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1.336.0
         with:
           bundler-cache: true
           ruby-version: .ruby-version
@@ -63,7 +71,8 @@ jobs:
           CI: "true"
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@04b047e8bb82a0c002c8312c1c880fbc6a999d45 # v5
+        if: matrix.jekyll-version == '~> 4.0'
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           files: ./coverage/coverage.xml
           disable_search: true
@@ -71,7 +80,8 @@ jobs:
           fail_ci_if_error: false
 
       - name: SonarQube Cloud scan
-        uses: SonarSource/sonarqube-scan-action@ba9859eae8dd6bd29e412f25ddbbef3d032000f4 # v8.2.2
+        if: matrix.jekyll-version == '~> 4.0'
+        uses: SonarSource/sonarqube-scan-action@4d1dc0c91ee400dcf8a6dddf2f705ac36542e304 # v8.4.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
@@ -84,7 +94,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
+        uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1.336.0
         with:
           bundler-cache: true
           ruby-version: .ruby-version
@@ -114,7 +124,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
+        uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1.336.0
         with:
           bundler-cache: true
           ruby-version: .ruby-version

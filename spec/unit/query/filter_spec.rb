@@ -611,6 +611,109 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Query::Filter do
 		end
 	end
 
+	it 'accepts scalar shortcut values such as integers, floats, regexes, and dates' do
+		items = [
+			build_item({ 'title' => 'One', 'rating' => 2, 'score' => 1.5, 'code' => 'abc-123', 'day' => Date.new(2026, 1, 5) }),
+			build_item({ 'title' => 'Two', 'rating' => 5, 'score' => 9.9, 'code' => 'zzz-999', 'day' => Date.new(2026, 2, 1) })
+		]
+
+		expect(apply_filters(items, { 'rating' => 2 })).to eq([items[0]])
+		expect(apply_filters(items, { 'score' => 1.5 })).to eq([items[0]])
+		expect(apply_filters(items, { 'code' => /^abc-/ })).to eq([items[0]])
+		expect(apply_filters(items, { 'day' => Date.new(2026, 1, 5) })).to eq([items[0]])
+	end
+
+	it 'ignores filter definitions of unsupported types' do
+		items = [
+			build_item({ 'title' => 'One', 'category' => 'news' }),
+			build_item({ 'title' => 'Two', 'category' => 'blog' })
+		]
+
+		expect(apply_filters(items, { 'category' => :news })).to eq(items)
+		expect(apply_filters(items, { 'category' => nil })).to eq(items)
+	end
+
+	it 'ignores non-scalar match values' do
+		items = [
+			build_item({ 'title' => 'One', 'category' => 'news' }),
+			build_item({ 'title' => 'Two', 'category' => 'blog' })
+		]
+
+		expect(apply_filters(items, { 'category' => { 'match' => %w[news blog] } })).to eq(items)
+	end
+
+	it 'supports exists given as the literal strings true and false' do
+		items = [
+			build_item({ 'title' => 'Missing' }),
+			build_item({ 'title' => 'Present', 'links' => 'project' })
+		]
+
+		expect(apply_filters(items, { 'links' => { 'exists' => 'true' } })).to eq([items[1]])
+		expect(apply_filters(items, { 'links' => { 'exists' => 'false' } })).to eq([items[0]])
+		expect(apply_filters(items, { 'links' => { 'exists' => 'object' } })).to eq(items)
+	end
+
+	it 'supports the generic inclusive and exclusive range mode tokens' do
+		items = [
+			build_item({ 'title' => 'One', 'rating' => 1 }),
+			build_item({ 'title' => 'Two', 'rating' => 2 }),
+			build_item({ 'title' => 'Three', 'rating' => 3 })
+		]
+
+		exclusive = apply_filters(
+			items,
+			{ 'rating' => { 'min' => 1, 'max' => 3, 'mode' => 'exclusive' } }
+		)
+		inclusive = apply_filters(
+			items,
+			{ 'rating' => { 'min' => 1, 'max' => 3, 'mode' => 'inclusive' } }
+		)
+
+		expect(exclusive).to eq([items[1]])
+		expect(inclusive).to eq(items)
+	end
+
+	it 'rejects boundary mode tokens that lack their corresponding bound' do
+		items = [
+			build_item({ 'title' => 'One', 'rating' => 1 }),
+			build_item({ 'title' => 'Two', 'rating' => 2 })
+		]
+
+		expect(apply_filters(items, { 'rating' => { 'max' => 2, 'mode' => 'min-inclusive' } })).to eq(items)
+		expect(apply_filters(items, { 'rating' => { 'min' => 1, 'mode' => 'max-exclusive' } })).to eq(items)
+		expect(apply_filters(items, { 'rating' => { 'match' => '1', 'mode' => 'inclusive' } })).to eq(items)
+	end
+
+	it 'rejects scalar mode tokens that lack a match value' do
+		items = [
+			build_item({ 'title' => 'One', 'rating' => 1 }),
+			build_item({ 'title' => 'Two', 'rating' => 2 })
+		]
+
+		expect(apply_filters(items, { 'rating' => { 'min' => 1, 'mode' => 'strict' } })).to eq(items)
+		expect(apply_filters(items, { 'rating' => { 'min' => 1, 'mode' => 'first' } })).to eq(items)
+	end
+
+	it 'treats a non-positive embedded first count as first(1)' do
+		items = [
+			build_item({ 'title' => 'One', 'contributors' => %w[alice bob] }),
+			build_item({ 'title' => 'Two', 'contributors' => %w[bob alice] })
+		]
+
+		filtered = apply_filters(
+			items,
+			{
+				'contributors' => {
+					'match' => 'alice',
+					'mode' => 'first(0)',
+					'split' => false
+				}
+			}
+		)
+
+		expect(filtered).to eq([items.first])
+	end
+
 	it 'treats malformed regex literals as invalid filters' do
 		logger = double('logger', call: nil)
 		items = [

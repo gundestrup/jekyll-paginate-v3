@@ -356,6 +356,115 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Config::Normaliser do
 				)
 			end.to raise_error(ArgumentError, /received 'pretty'/)
 		end
+
+		it 'supports legacy root split and separator aliases for syntax' do
+			config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true,
+					'split' => '|',
+					'separator' => ':'
+				}
+			)
+
+			expect(config.dig('syntax', 'split')).to eq('|')
+			expect(config.dig('syntax', 'separator')).to eq(':')
+		end
+
+		it 'falls back to nested_key_separator when syntax.separator is blank' do
+			config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true,
+					'syntax' => {
+						'separator' => '',
+						'nested_key_separator' => ':'
+					}
+				}
+			)
+
+			expect(config.dig('syntax', 'separator')).to eq(':')
+		end
+
+		it 'passes unrecognised compatibility modes through without applying a profile' do
+			config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true,
+					'compatibility' => 'v9'
+				}
+			)
+
+			expect(config['compatibility']).to eq('v9')
+		end
+
+		it 'derives sort from sort_field and sort_reverse when sort is set but blank' do
+			config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true,
+					'sort' => '',
+					'sort_field' => 'date',
+					'sort_reverse' => true
+				}
+			)
+
+			expect(config['sort']).to eq(['date desc'])
+		end
+
+		it 'falls back to the default sort when sort and sort_field are both blank' do
+			config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true,
+					'sort' => '',
+					'sort_field' => ''
+				}
+			)
+
+			expect(config['sort']).to eq(['date desc'])
+		end
+
+		it 'restores default equivalents when equivalents is explicitly nil' do
+			config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true,
+					'equivalents' => nil
+				}
+			)
+
+			expect(config['equivalents']).to eq([%w[tag tags], %w[category categories]])
+		end
+
+		it 'ignores generated-template definitions of unsupported types' do
+			config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true,
+					'templates' => {
+						'generate' => 'nonsense'
+					}
+				}
+			)
+
+			expect(config.dig('templates', 'generate')).to eq([])
+		end
+
+		it 'supports single-key hash group entries and bunch/group size aliases' do
+			config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true,
+					'group' => [
+						{ 'category' => 10 },
+						{ 'on' => 'tag', 'bunch' => 3 },
+						{ 'on' => 'author', 'group' => 4 },
+						5,
+						{ 'size' => 9, 'other' => 2 }
+					]
+				}
+			)
+
+			expect(config['group']).to eq([
+				{ 'on' => 'category', 'size' => 10 },
+				{ 'on' => 'tag', 'size' => 3 },
+				{ 'on' => 'author', 'size' => 4 },
+				{ 'on' => '5' }
+			])
+		end
 	end
 
 	describe '.normalise_template_config' do
@@ -479,6 +588,109 @@ RSpec.describe Jekyll::Plugins::PaginateV3::Config::Normaliser do
 					}
 				)
 			end.to raise_error(ArgumentError, /Duplicate pagination group key.*meta\.category/)
+		end
+
+		it 'supports legacy split and separator keys on templates' do
+			site_config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true
+				}
+			)
+
+			config = described_class.normalise_template_config(
+				site_config,
+				{
+					'enabled' => true,
+					'split' => ';',
+					'separator' => ':'
+				}
+			)
+
+			expect(config['split']).to eq(';')
+			expect(config['separator']).to eq(':')
+		end
+
+		it 'keeps the site separator when the template separator is blank' do
+			site_config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true
+				}
+			)
+
+			config = described_class.normalise_template_config(
+				site_config,
+				{
+					'enabled' => true,
+					'separator' => '   '
+				}
+			)
+
+			expect(config['separator']).to eq('.')
+		end
+
+		it 'normalises legacy index, group, and filter keys into group entries' do
+			site_config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true
+				}
+			)
+
+			config = described_class.normalise_template_config(
+				site_config,
+				{
+					'enabled' => true,
+					'index' => 'category,tag',
+					'group' => { 'category' => 5 },
+					'filter' => { 'min' => 1 }
+				}
+			)
+
+			expect(config['group']).to eq([
+				{ 'on' => 'category', 'size' => 5, 'filter' => { 'min' => 1 } },
+				{ 'on' => 'tag', 'filter' => { 'min' => 1 } }
+			])
+			expect(config).not_to have_key('index')
+			expect(config).not_to have_key('filter')
+		end
+
+		it 'applies a scalar legacy group size to a single index key' do
+			site_config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true
+				}
+			)
+
+			config = described_class.normalise_template_config(
+				site_config,
+				{
+					'enabled' => true,
+					'index' => 'category',
+					'group' => 10
+				}
+			)
+
+			expect(config['group']).to eq([{ 'on' => 'category', 'size' => 10 }])
+		end
+
+		it 'reads nested legacy template overrides inside a template pagination block' do
+			site_config = described_class.normalise_site_config(
+				'pagination' => {
+					'enabled' => true
+				}
+			)
+
+			config = described_class.normalise_template_config(
+				site_config,
+				{
+					'enabled' => true,
+					'templates' => {
+						'sort_field' => 'date',
+						'sort_reverse' => true
+					}
+				}
+			)
+
+			expect(config['sort']).to eq(['date desc'])
 		end
 	end
 end

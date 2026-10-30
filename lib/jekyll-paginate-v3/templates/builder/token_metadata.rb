@@ -96,31 +96,6 @@ class Builder
 		Jekyll::Plugins::PaginateV3::Support::LooseScalar.boolean(value) == true
 	end
 
-	# Captures generated-template metadata for compatibility and template use.
-	def build_generated_metadata(index_keys, raw_values, token_map, group_levels: [])
-		metadata = {
-			'generated_template' => true,
-			'index_keys' => index_keys,
-			'tokens' => Utils.deep_copy(raw_values),
-			'compatibility' => @compatibility_mode
-		}
-
-		if @compatibility_mode == 'v2' && index_keys.length == 1
-			key = index_keys.first
-			metadata['autopages'] = {
-				'key' => key,
-				'value' => token_map[key],
-				'display_name' => raw_values[key].to_s
-			}
-		end
-
-		unless group_levels.empty?
-			metadata['groups'] = Utils.deep_copy(group_levels)
-		end
-
-		metadata
-	end
-
 	# Builds metadata for group-link sets at each indexed key depth.
 	def build_group_level_metadata(entry, definition_number, layout_name)
 		levels = Utils.arrayify(entry['levels'])

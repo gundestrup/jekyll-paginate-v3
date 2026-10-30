@@ -1,0 +1,8 @@
+title: Golden Fixture Site
+url: https://golden.test
+
+plugins:
+  - jekyll-paginate-v3
+
+pagination:
+  enabled: true

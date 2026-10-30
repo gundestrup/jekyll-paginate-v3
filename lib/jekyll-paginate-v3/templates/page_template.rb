@@ -29,7 +29,6 @@ class PageTemplate < Jekyll::Page
 		self.data['pagination']['template'] = true
 		self.data['paginate_v3'] = generated_metadata_hash
 
-		apply_v2_compatibility_metadata!
 		apply_permalink!
 
 		data.default_proc = proc do |_, key|
@@ -53,22 +52,6 @@ class PageTemplate < Jekyll::Page
 				'content_type' => 'page-template'
 			}
 		)
-	end
-
-	# Adds legacy-friendly fields only when v2 compatibility is active.
-	def apply_v2_compatibility_metadata!
-		return unless data.dig('paginate_v3', 'compatibility') == 'v2'
-
-		autopage_data = Utils.safe_hash(data.dig('paginate_v3', 'autopages'))
-		return if autopage_data.empty?
-
-		data['autopages'] = autopage_data
-		key = autopage_data['key'].to_s
-		return if key.empty?
-		return if key == 'collection'
-		return if key.include?('.') || key.include?(':')
-
-		data[key] = autopage_data['value']
 	end
 
 	# Applies frontmatter permalink directly so the synthetic template

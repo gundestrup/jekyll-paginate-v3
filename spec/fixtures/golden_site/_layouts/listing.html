@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+	<body>
+		<h1>{{ page.title }}</h1>
+		<ul id="items">
+			{%- for item in paginator.items %}
+			<li>{{ item.title }}</li>
+			{%- endfor %}
+		</ul>
+		<p id="position">Page {{ paginator.current.num }} of {{ paginator.total_indexes }}</p>
+		<nav>
+			{%- if paginator.prev %}<a id="prev" href="{{ paginator.prev.page.url }}">Newer</a>{% endif %}
+			{%- if paginator.next %}<a id="next" href="{{ paginator.next.page.url }}">Older</a>{% endif %}
+		</nav>
+	</body>
+</html>

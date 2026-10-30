@@ -1,6 +1,17 @@
 # Changelog
 
 
+## Unreleased
+
+* **Breaking change**: minimum Jekyll version raised from 3.8.5 to 3.9.0. Jekyll 3.8.x requires `kramdown ~> 1.14`, which is incompatible with `kramdown-parser-gfm` (`kramdown ~> 2.0`) and predates Ruby 3 compatibility fixes.
+* CI now tests against a Jekyll version matrix (`~> 3.9.0` and `~> 4.0`).
+* Added true end-to-end coverage: `jekyll build` runs as a real subprocess against a fixture site, with rendered output compared byte-for-byte against committed golden files.
+* Added rendered-HTML assertions to the integration suite — generated pages' Liquid output is verified, not just in-memory paginator payloads.
+* Expanded unit coverage of config normalisation and filter parsing edge cases (branch coverage now ~79%).
+* Removed dead v2-compatibility metadata handling in generated template classes; `VariantExpander` owns the single live implementation.
+* Refreshed development dependencies (bigdecimal 4.x, rubocop 1.92.2) and CI action pins; declared `csv`/`base64` dev dependencies so Jekyll 3.x runs on Ruby 3.4.
+
+
 ## 0.2.1.alpha
 
 * Fixed a serious bug in date parsing, which too eagerly coerced strings to dates. Strings are now only read as dates in explicitly date-aware operations, and only if the string is in ISO 6801 shape.
