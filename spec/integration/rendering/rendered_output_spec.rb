@@ -73,10 +73,10 @@ RSpec.describe 'Pagination integration: rendered HTML output' do
 			page_two_path = %w[2.html 2/index.html].find { |relative_path| output_file?(output_files, relative_path) }
 			expect(page_two_path).not_to be_nil
 			page_two = output_files.read(page_two_path)
-			trail_entries = page_two.scan(%r{<li>(\d+)\|([^|]*)\|([^|]*)\|([^|]*)</li>}).flatten
+			trail_entries = page_two.split('<li>').drop(1).map { |fragment| fragment.split('</li>').first.split('|') }
 
 			expect(page_two).to include('<ol id="trail">')
-			expect(trail_entries).to include('2', 'true')
+			expect(trail_entries).to include(['1', '/', 'false', '-1'], ['2', '', 'true', '0'], ['3', '/3', 'false', '1'])
 			expect(page_two).to match(%r{<li>1\|/\|})
 		end
 	end
