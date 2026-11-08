@@ -26,6 +26,19 @@ Like previous versions, to use pagination you must create "templates":
 Pagination templates can be created manually (create the files in your site) or generated according to your config at `pagination: templates: generate`.
 
 
+<!-- markdownlint-disable MD033 -->
+<picture>
+  <source
+    srcset="docs/assets/jekyll-paginate-v3-demo.avif"
+    type="image/avif">
+  <source
+    srcset="docs/assets/jekyll-paginate-v3-demo.webp"
+    type="image/webp">
+  <img src="docs/assets/jekyll-paginate-v3-demo.png"
+       alt="jekyll-paginate-v3 demo">
+</picture>
+<!-- markdownlint-enable MD033 -->
+
 ## Quickstart
 
 Include the plugin in your project:

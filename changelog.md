@@ -3,6 +3,13 @@
 
 ## Unreleased
 
+### Added
+
+- `rake docs:demo` — captures the checked-in illustrative overview as
+  animated AVIF + WebP + static PNG (headless Chrome + ffmpeg + img2webp;
+  build-host tools), embedded in README via `<picture>`. Examples are
+  schematic, not generated from a live Jekyll build.
+
 * **Breaking change**: minimum Jekyll version raised from 3.8.5 to 3.9.0. Jekyll 3.8.x requires `kramdown ~> 1.14`, which is incompatible with `kramdown-parser-gfm` (`kramdown ~> 2.0`) and predates Ruby 3 compatibility fixes.
 * CI now tests against a Jekyll version matrix (`~> 3.9.0` and `~> 4.0`).
 * Added true end-to-end coverage: `jekyll build` runs as a real subprocess against a fixture site, with rendered output compared byte-for-byte against committed golden files.

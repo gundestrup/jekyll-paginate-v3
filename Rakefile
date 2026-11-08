@@ -201,3 +201,8 @@ task :publish do
 
 	raise "Unable to publish #{specification.full_name}"
 end
+
+desc "Generate docs/assets demo captures (needs Chrome, ffmpeg, img2webp)"
+task "docs:demo" do
+  sh "scripts/docs-demo.sh"
+end
