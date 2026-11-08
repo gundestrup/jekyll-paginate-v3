@@ -10,6 +10,7 @@
 * Expanded unit coverage of config normalisation and filter parsing edge cases (branch coverage now ~79%).
 * Removed dead v2-compatibility metadata handling in generated template classes; `VariantExpander` owns the single live implementation.
 * Refreshed development dependencies (bigdecimal 4.x, rubocop 1.92.2) and CI action pins; declared `csv`/`base64` dev dependencies so Jekyll 3.x runs on Ruby 3.4.
+* In-range gem updates: `addressable` 2.9.2, `irb` 1.19.0, `sass-embedded` 1.108.1, `rspec-*` 3.13.x patches; `BUNDLED WITH` 4.0.24. CI: `ruby/setup-ruby` v1.338.0.
 
 
 ## 0.2.1.alpha
