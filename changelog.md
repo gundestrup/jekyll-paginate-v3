@@ -3,12 +3,18 @@
 
 ## Unreleased
 
+
+## 0.2.2.alpha
+
 ### Added
 
 - `rake docs:demo` — captures the checked-in illustrative overview as
   animated AVIF + WebP + static PNG (headless Chrome + ffmpeg + img2webp;
   build-host tools), embedded in README via `<picture>`. Examples are
   schematic, not generated from a live Jekyll build.
+
+* Gemspec `metadata` block added (`homepage_uri`, `source_code_uri`, `changelog_uri`, `bug_tracker_uri`, `rubygems_mfa_required`) and the `description` is now RDoc `==`-formatted so rubygems.org renders it as markup.
+* `COPYING` (GPL-3.0) and `COPYING.LESSER` (LGPL-3.0) license texts added and shipped in the gem via `spec.files` alongside `readme.md` and `changelog.md`.
 
 * **Breaking change**: minimum Jekyll version raised from 3.8.5 to 3.9.0. Jekyll 3.8.x requires `kramdown ~> 1.14`, which is incompatible with `kramdown-parser-gfm` (`kramdown ~> 2.0`) and predates Ruby 3 compatibility fixes.
 * CI now tests against a Jekyll version matrix (`~> 3.9.0` and `~> 4.0`).
