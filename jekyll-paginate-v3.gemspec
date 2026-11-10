@@ -10,11 +10,28 @@ Gem::Specification.new do |spec|
 	spec.email = ['development@convincible.media']
 
 	spec.summary = "Flexible, configurable pagination for Jekyll websites."
-	spec.description = "Automatically creates pagination pages (page 1, page 2, etc.) for sets of pages or collection documents. Powerful configuration options include filtering or grouping by any frontmatter key."
+	# NOTE: rubygems.org renders the description through RDoc::Markup only
+	# when it starts with an == heading at column 0 — keep the heredoc
+	# content flush-left or the page renders as one plain <p>.
+	spec.description = <<~DESC
+   == Flexible, configurable pagination for Jekyll
+
+   Automatically creates pagination pages (page 1, page 2, etc.) for sets
+   of pages or collection documents. Powerful configuration options
+   include filtering or grouping by any frontmatter key.
+	DESC
 	spec.homepage = 'https://github.com/ConvincibleMedia/jekyll-paginate-v3'
 	spec.license = 'LGPL-3.0-or-later'
 
-	spec.files = Dir['lib/**/*.rb'] + %w[readme.md]
+	spec.metadata = {
+		'homepage_uri' => spec.homepage,
+		'source_code_uri' => spec.homepage,
+		'changelog_uri' => "#{spec.homepage}/blob/main/changelog.md",
+		'bug_tracker_uri' => "#{spec.homepage}/issues",
+		'rubygems_mfa_required' => 'true'
+	}
+
+	spec.files = Dir['lib/**/*.rb'] + %w[readme.md changelog.md]
 	spec.require_paths = ['lib']
 
 	spec.required_ruby_version = '>= 2.4.4'
