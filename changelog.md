@@ -13,87 +13,87 @@
   build-host tools), embedded in README via `<picture>`. Examples are
   schematic, not generated from a live Jekyll build.
 
-* Gemspec `metadata` block added (`homepage_uri`, `source_code_uri`, `changelog_uri`, `bug_tracker_uri`, `rubygems_mfa_required`) and the `description` is now RDoc `==`-formatted so rubygems.org renders it as markup.
-* `COPYING` (GPL-3.0) and `COPYING.LESSER` (LGPL-3.0) license texts added and shipped in the gem via `spec.files` alongside `readme.md` and `changelog.md`.
+- Gemspec `metadata` block added (`homepage_uri`, `source_code_uri`, `changelog_uri`, `bug_tracker_uri`, `rubygems_mfa_required`) and the `description` is now RDoc `==`-formatted so rubygems.org renders it as markup.
+- `COPYING` (GPL-3.0) and `COPYING.LESSER` (LGPL-3.0) license texts added and shipped in the gem via `spec.files` alongside `readme.md` and `changelog.md`.
 
-* **Breaking change**: minimum Jekyll version raised from 3.8.5 to 3.9.0. Jekyll 3.8.x requires `kramdown ~> 1.14`, which is incompatible with `kramdown-parser-gfm` (`kramdown ~> 2.0`) and predates Ruby 3 compatibility fixes.
-* CI now tests against a Jekyll version matrix (`~> 3.9.0` and `~> 4.0`).
-* Added true end-to-end coverage: `jekyll build` runs as a real subprocess against a fixture site, with rendered output compared byte-for-byte against committed golden files.
-* Added rendered-HTML assertions to the integration suite — generated pages' Liquid output is verified, not just in-memory paginator payloads.
-* Expanded unit coverage of config normalisation and filter parsing edge cases (branch coverage now ~79%).
-* Removed dead v2-compatibility metadata handling in generated template classes; `VariantExpander` owns the single live implementation.
-* Refreshed development dependencies (bigdecimal 4.x, rubocop 1.92.2) and CI action pins; declared `csv`/`base64` dev dependencies so Jekyll 3.x runs on Ruby 3.4.
-* In-range gem updates: `addressable` 2.9.2, `irb` 1.19.0, `sass-embedded` 1.108.1, `rspec-*` 3.13.x patches; `BUNDLED WITH` 4.0.24. CI: `ruby/setup-ruby` v1.338.0.
+- **Breaking change**: minimum Jekyll version raised from 3.8.5 to 3.9.0. Jekyll 3.8.x requires `kramdown ~> 1.14`, which is incompatible with `kramdown-parser-gfm` (`kramdown ~> 2.0`) and predates Ruby 3 compatibility fixes.
+- CI now tests against a Jekyll version matrix (`~> 3.9.0` and `~> 4.0`).
+- Added true end-to-end coverage: `jekyll build` runs as a real subprocess against a fixture site, with rendered output compared byte-for-byte against committed golden files.
+- Added rendered-HTML assertions to the integration suite — generated pages' Liquid output is verified, not just in-memory paginator payloads.
+- Expanded unit coverage of config normalisation and filter parsing edge cases (branch coverage now ~79%).
+- Removed dead v2-compatibility metadata handling in generated template classes; `VariantExpander` owns the single live implementation.
+- Refreshed development dependencies (bigdecimal 4.x, rubocop 1.92.2) and CI action pins; declared `csv`/`base64` dev dependencies so Jekyll 3.x runs on Ruby 3.4.
+- In-range gem updates: `addressable` 2.9.2, `irb` 1.19.0, `sass-embedded` 1.108.1, `rspec-*` 3.13.x patches; `BUNDLED WITH` 4.0.24. CI: `ruby/setup-ruby` v1.338.0.
 
 
 ## 0.2.1.alpha
 
-* Fixed a serious bug in date parsing, which too eagerly coerced strings to dates. Strings are now only read as dates in explicitly date-aware operations, and only if the string is in ISO 6801 shape.
+- Fixed a serious bug in date parsing, which too eagerly coerced strings to dates. Strings are now only read as dates in explicitly date-aware operations, and only if the string is in ISO 6801 shape.
 
 
 ## 0.2.0.alpha
 
-* Placeholder pipeline overhauled and made more robust.
-  * Format updated to `{{ placeholder }}`.
-  * Can exert some control over whether the placeholder will be slugified or not.
-  * Original `:placeholder` format still supported.
-* **Breaking change**: `slugify` modes refined, and dangerous modes retired.
-* Page 1 now remains the exact original object when under `self` mode.
-* Indexes now include `pagination.base` (the URL fragment of the originating template) and `pagination.path`.
-* **Breaking change**: permalinks must be relative to the pagination template and cannot begin with `/`. Root-relative `paginate_path` remains supported only in V1 compatibility mode.
+- Placeholder pipeline overhauled and made more robust.
+  - Format updated to `{{ placeholder }}`.
+  - Can exert some control over whether the placeholder will be slugified or not.
+  - Original `:placeholder` format still supported.
+- **Breaking change**: `slugify` modes refined, and dangerous modes retired.
+- Page 1 now remains the exact original object when under `self` mode.
+- Indexes now include `pagination.base` (the URL fragment of the originating template) and `pagination.path`.
+- **Breaking change**: permalinks must be relative to the pagination template and cannot begin with `/`. Root-relative `paginate_path` remains supported only in V1 compatibility mode.
 
 
 ## 0.1.0.alpha.3
 
-* Synthetic filenames are now more meaningful, to aid with debugging.
-* Bugfix: keyword changes now work.
+- Synthetic filenames are now more meaningful, to aid with debugging.
+- Bugfix: keyword changes now work.
 
 
 ## 0.1.0.alpha.2
 
-* Ensure collection document order is preserved when operating on templates in collections.
+- Ensure collection document order is preserved when operating on templates in collections.
 
 
 ## 0.1.0.alpha.1
 
-* Fix and refactor to ensure pagination *templates* can themselves be *items* that are paginated over. Index pages (generated from templates) remain excluded from pagination.
+- Fix and refactor to ensure pagination *templates* can themselves be *items* that are paginated over. Index pages (generated from templates) remain excluded from pagination.
 
 
 ## 0.1.0.alpha
 
-* Templates can be pages or documents, and are found at `pagination.templates.location`.
-* Pagination can look for `items` in pages or collections with optional globs.
-* Generic frontmatter filters (`match`, `include`/`exclude`, `min`/`max`, regex, join modes).
-* Generate templates from config at `pagination.templates.generate` or with `group` config for multi-level/bunched grouping by numeric, date or alphabetic values.
-* Multi-level `sort` options.
-* Nested-key access (default `.`), equivalent keys (for example `tag`/`tags`), and delimiter-driven array parsing.
-* New structured format for `page.paginator` (with v2 compatibility mode).
-* Paginate between index sets with `paginator.group`.
-* Explicit compatibility modes (`compatibility: v1` / `v2`) to interpret legacy configuration.
+- Templates can be pages or documents, and are found at `pagination.templates.location`.
+- Pagination can look for `items` in pages or collections with optional globs.
+- Generic frontmatter filters (`match`, `include`/`exclude`, `min`/`max`, regex, join modes).
+- Generate templates from config at `pagination.templates.generate` or with `group` config for multi-level/bunched grouping by numeric, date or alphabetic values.
+- Multi-level `sort` options.
+- Nested-key access (default `.`), equivalent keys (for example `tag`/`tags`), and delimiter-driven array parsing.
+- New structured format for `page.paginator` (with v2 compatibility mode).
+- Paginate between index sets with `paginator.group`.
+- Explicit compatibility modes (`compatibility: v1` / `v2`) to interpret legacy configuration.
 
 
 ## V2 1.9.4
 
 Historical record of key features from the prior gem.
 
-* Primary config lived under `pagination` in `_config.yml` (`enabled`, `collection`, `per_page`, `permalink`, `title`, `limit`, `offset`, `sort_field`, `sort_reverse`, `trail`, `indexpage`, `extension`), with page-level frontmatter overrides.
-* Paginated `posts` by default, but could paginate a named collection, multiple collections, or special `all`.
-* Added first-class filtering by `category`, `tag`, and `locale`; comma-delimited values acted as combined filters.
-* Supported advanced sorting, including nested fields via `:` path syntax (for example `author:name:first`).
-* Extended paginator payload beyond v1 with `page_path`, `first_page(_path)`, `last_page(_path)`, and `page_trail` (while keeping v1-style fields).
-* Marked generated pagination pages with `page.autogen = "jekyll-paginate-v2"` for detection in templates.
-* Included optional, experimental `autopages` to generate tag/category/collection index pages from site content.
-* Included legacy compatibility mode for old `paginate`/`paginate_path` config (mutually exclusive with new `pagination` mode).
+- Primary config lived under `pagination` in `_config.yml` (`enabled`, `collection`, `per_page`, `permalink`, `title`, `limit`, `offset`, `sort_field`, `sort_reverse`, `trail`, `indexpage`, `extension`), with page-level frontmatter overrides.
+- Paginated `posts` by default, but could paginate a named collection, multiple collections, or special `all`.
+- Added first-class filtering by `category`, `tag`, and `locale`; comma-delimited values acted as combined filters.
+- Supported advanced sorting, including nested fields via `:` path syntax (for example `author:name:first`).
+- Extended paginator payload beyond v1 with `page_path`, `first_page(_path)`, `last_page(_path)`, and `page_trail` (while keeping v1-style fields).
+- Marked generated pagination pages with `page.autogen = "jekyll-paginate-v2"` for detection in templates.
+- Included optional, experimental `autopages` to generate tag/category/collection index pages from site content.
+- Included legacy compatibility mode for old `paginate`/`paginate_path` config (mutually exclusive with new `pagination` mode).
 
 
 ## V1 1.1.0
 
 Historical record of key features from the prior gem.
 
-* Enabled only when `site.config['paginate']` was set; read configuration from `paginate` (per-page size) and `paginate_path`.
-* Paginated only `site.site_payload['site']['posts']`, always excluding posts with `hidden: true`.
-* Selected exactly one template page: `index.html` within the source-to-`paginate_path` hierarchy (preferring the deepest matching path).
-* Used the template page as page 1 and cloned it for page 2+ (`site.pages << newpage`), with `newpage.dir` set from `paginate_path`.
-* Required `paginate_path` to contain `:num` for numbered pages; raised `ArgumentError` otherwise.
-* Exposed minimal paginator/liquid contract: `page`, `per_page`, `posts`, `total_posts`, `total_pages`, `previous_page(_path)`, `next_page(_path)`.
-* Computed page counts by ceiling division and raised on invalid page requests (`page > total_pages`).
+- Enabled only when `site.config['paginate']` was set; read configuration from `paginate` (per-page size) and `paginate_path`.
+- Paginated only `site.site_payload['site']['posts']`, always excluding posts with `hidden: true`.
+- Selected exactly one template page: `index.html` within the source-to-`paginate_path` hierarchy (preferring the deepest matching path).
+- Used the template page as page 1 and cloned it for page 2+ (`site.pages << newpage`), with `newpage.dir` set from `paginate_path`.
+- Required `paginate_path` to contain `:num` for numbered pages; raised `ArgumentError` otherwise.
+- Exposed minimal paginator/liquid contract: `page`, `per_page`, `posts`, `total_posts`, `total_pages`, `previous_page(_path)`, `next_page(_path)`.
+- Computed page counts by ceiling division and raised on invalid page requests (`page > total_pages`).
