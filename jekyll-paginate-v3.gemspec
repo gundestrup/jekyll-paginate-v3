@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 		'rubygems_mfa_required' => 'true'
 	}
 
-	spec.files = Dir['lib/**/*.rb'] + %w[readme.md changelog.md]
+	spec.files = Dir['lib/**/*.rb'] + %w[readme.md changelog.md COPYING COPYING.LESSER]
 	spec.require_paths = ['lib']
 
 	spec.required_ruby_version = '>= 2.4.4'
