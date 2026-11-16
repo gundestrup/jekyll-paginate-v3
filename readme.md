@@ -8,7 +8,7 @@
 [![Semgrep](https://img.shields.io/badge/Semgrep-CE%20scan-4B32C3?logo=semgrep&logoColor=white)](https://github.com/gundestrup/jekyll-paginate-v3/actions/workflows/ci.yml)
 [![SonarCloud Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=gundestrup_jekyll-paginate-v3&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=gundestrup_jekyll-paginate-v3)
 [![CodeFactor](https://www.codefactor.io/repository/github/gundestrup/jekyll-paginate-v3/badge)](https://www.codefactor.io/repository/github/gundestrup/jekyll-paginate-v3)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gundestrup/jekyll-paginate-v3)
+[<img src="https://devin.ai/assets/askdeepwiki.png" alt="Ask DeepWiki" height="20"/>](https://deepwiki.com/gundestrup/jekyll-paginate-v3)
 
 Flexible and configurable pagination for Jekyll 3.9+.
 
