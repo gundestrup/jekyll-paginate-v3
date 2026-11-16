@@ -1,6 +1,4 @@
-<!-- markdownlint-disable MD013 MD033 -->
 # Jekyll Paginate V3 <a href="https://gundestrup.github.io/flow/"><img align="right" src="https://gundestrup.github.io/flow/assets/badges/part-of-flow.svg?v=2" alt="Part of Flow software" height="40"></a>
-<!-- markdownlint-enable MD013 MD033 -->
 
 ![Alpha](https://img.shields.io/badge/status-alpha-red)
 [![CI](https://github.com/gundestrup/jekyll-paginate-v3/actions/workflows/ci.yml/badge.svg)](https://github.com/gundestrup/jekyll-paginate-v3/actions/workflows/ci.yml)
